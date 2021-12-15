@@ -7,6 +7,6 @@ export class GitHubStore implements IGitHubStore {
 
     async getOrganizationReposList(params: GetOrganizationReposListParams): Promise<ApiResp> {
         let response = await this.apiStore.request({method: HTTPMethod.GET, endpoint: params.organizationName, headers: {}});
-        return [response.success, response.status, response.data];
+        return [response.success, response.data, response.status];
     }
 }

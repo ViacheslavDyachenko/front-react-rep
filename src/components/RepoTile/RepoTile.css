@@ -1,0 +1,74 @@
+.repositoty {
+    display: flex;
+    width: 357px;
+    height: 104px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    position: relative;
+}
+.repositoty:hover {
+    box-shadow: 0px 2px 6px rgba(182, 182, 182, 0.25);
+    cursor: pointer;
+}
+.information_rep {
+    display: inline-block;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 100px;
+    transform: translateY(-50%);
+}
+.title {
+    font-family: Roboto, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+    width: 240px;
+    white-space: nowrap;
+    overflow-x: hidden;
+}
+.company {
+    display: inline-block;
+    margin-top: 4px;
+    margin-bottom: 0;
+    font-family: Roboto, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    color: var(--plasesholder-color);
+}
+.company:hover {
+    color: var(--company-hover);
+}
+.details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    position: relative;
+    width: 200px;
+}
+.star_repository {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 12.39px;
+}
+.counter_star {
+    margin-left: 17px;
+    font-family: Robot, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    color: var(--plasesholder-color);
+}
+.last_update {
+    height: 16px;
+    margin: 0;
+    margin-left: 20px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    color: var(--plasesholder-color);
+}
