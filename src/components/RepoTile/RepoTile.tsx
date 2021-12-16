@@ -1,3 +1,4 @@
+import React from "react";
 import Avatar from "../Avatar/Avatar"
 import StarIcon from "../StarIcon/StarIcon"
 import "./RepoTile.css";
@@ -5,19 +6,20 @@ import "./RepoTile.css";
 type RepoTileProps = {
     src?: string,
     alt?: string,
+    owner?: string,
+    repo?: string, 
     item: {
-        key?: number,
         title?: string,
         company?: string,
         counter_star?: number,
         last_update?: string
     },
-    onClick: () => void
+    onClick: (event: React.MouseEvent) => void
 }
 
 const RepoTile: React.FC<RepoTileProps> = ({src, alt, item, onClick}: RepoTileProps) => {
     return (
-        <div onClick={onClick} key={item.key} className="repositoty">
+        <div onClick={onClick} id={`${item.title}`} key={item.title} className="repositoty">
             <Avatar src={src} alt={alt} />
             <div className="information_rep">
                 <p className="title">{item.title}</p>
