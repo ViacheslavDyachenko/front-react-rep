@@ -7,7 +7,7 @@ export class ApiStore implements IApiStore {
     }
 
     async getRequestData<SuccessT, ErrorT = any>(params: RequestParams): Promise<ApiResponse<SuccessT, ErrorT>>{
-        let endpoint: string = this.baseUrl.replace('{org}', params.endpoint);
+        let endpoint: string = `${this.baseUrl}${params.endpoint}`;
         let requestInit = {
             method: params.method,
             headers: params.headers

@@ -1,4 +1,5 @@
 import React from "react"
+import { Drawer } from 'antd';
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input"
 import RepoTile from "../../components/RepoTile";
@@ -15,6 +16,16 @@ const ReposSearchPage = () => {
 
     const getData = React.useRef([[{}]]);
 
+    const [visible, setVisible] = React.useState(false);
+    const showDrawer = () => {
+        setVisible(true);
+        console.log(visible);
+    };
+    const onClose = () => {
+        setVisible(false);
+        
+    };
+
     const onChange = (event: React.FormEvent): void => {
         let element = event.target as HTMLInputElement;
         setValue(element.value);
@@ -29,9 +40,10 @@ const ReposSearchPage = () => {
         if(showTile){
             setTile(async() => {
                 try {
-                    let pronise =  await new GitHubStore().getOrganizationReposList({organizationName: value})
+                    let pronise =  await new GitHubStore().getOrganizationReposList({organizationName: value});
                 tile = await pronise[1].map((item: any) => {
-                    return {key: item.id,
+                    return {src: item.owner.avatar_url,
+                            key: item.id,
                             title: item.name,
                             company: item.owner.login,
                             counter_star: item.watchers,
@@ -59,10 +71,19 @@ const ReposSearchPage = () => {
             </div>
             <div className="repositories">                              
                 {Boolean(Object.keys(getData.current[0][0]).length) 
-                && getData.current[0].map((item) => <RepoTile key={Number(Object.values(item)[0])} item={item} onClick={() => {}} />)}
+                && getData.current[0].map((item) => <RepoTile src={String(Object.values(item)[0])} key={Number(Object.values(item)[1])} item={item} onClick={showDrawer} />)}
+                <Drawer title="Basic Drawer" placement="right" onClose={onClose} visible={visible}>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                </Drawer>
             </div>
         </>
     )
 }
+
+let resp = new GitHubStore().GetBranchList({ownerName: 'ktsstudio', reposName: 'notific'});
+console.log(resp);
+
 
 export default ReposSearchPage;

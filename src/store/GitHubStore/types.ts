@@ -12,10 +12,16 @@ export type GetOrganizationReposListParams = {
     organizationName: string
 }
 
+export type GetBranchListParams = {
+    ownerName: string,
+    reposName: string
+}
+
 export type ApiResp =  [boolean,
                         any,
                         number | StatusHTTP.BAD_STATUS]
 
  export interface IGitHubStore {
     getOrganizationReposList(params: GetOrganizationReposListParams): Promise<ApiResp>;
+    GetBranchList(params: GetBranchListParams): Promise<ApiResp>;
 }

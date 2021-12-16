@@ -3,6 +3,8 @@ import StarIcon from "../StarIcon/StarIcon"
 import "./RepoTile.css";
 
 type RepoTileProps = {
+    src?: string,
+    alt?: string,
     item: {
         key?: number,
         title?: string,
@@ -10,13 +12,13 @@ type RepoTileProps = {
         counter_star?: number,
         last_update?: string
     },
-    onClick: (e: React.MouseEvent) => void
+    onClick: () => void
 }
 
-const RepoTile: React.FC<RepoTileProps> = ({item, onClick}: RepoTileProps) => {
+const RepoTile: React.FC<RepoTileProps> = ({src, alt, item, onClick}: RepoTileProps) => {
     return (
-        <div key={item.key} className="repositoty">
-            <Avatar alt='K' />
+        <div onClick={onClick} key={item.key} className="repositoty">
+            <Avatar src={src} alt={alt} />
             <div className="information_rep">
                 <p className="title">{item.title}</p>
                 <p className="company">{item.company}</p>
