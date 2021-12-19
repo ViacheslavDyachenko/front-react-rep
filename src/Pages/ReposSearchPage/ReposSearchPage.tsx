@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom";
 import { createThisTypeNode } from "typescript";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input"
@@ -124,7 +125,7 @@ const ReposSearchPage = () => {
                 {Boolean(getData.current[0].item.title) 
                 && getData.current.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
             </div>
-            {Boolean(owner) && Boolean(repo) && <RepoBranchesDrawer branchData={{owner: owner, repo: repo}} onClose={onClose} visible={visible}  /> }
+            {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer branchData={{owner: owner, repo: repo}} onClose={onClose} visible={visible}  /></Link> }
         </>
     )
 }

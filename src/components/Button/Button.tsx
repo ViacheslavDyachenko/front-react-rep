@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Button.css';
 
 type ButtonProps = {
@@ -8,12 +9,14 @@ type ButtonProps = {
 
 const Button: React.FC<ButtonProps> = ({children, onClick, disabled}: ButtonProps) => {
     return (
-        <button 
-        className="search_btn"
-        onClick={onClick}
-        disabled={disabled}>
+        <Link to='/repos'>
+            <button 
+            className="search_btn"
+            onClick={onClick}
+            disabled={disabled}>
             {children}
-        </button>
+            </button>
+        </Link>
     )
 }
 

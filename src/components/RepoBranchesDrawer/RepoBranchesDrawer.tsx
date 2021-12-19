@@ -1,6 +1,7 @@
 import { Drawer } from "antd"
 import React from "react";
 import { GitHubStore } from "../../store/GitHubStore/GitHubStore";
+import './RepoBranchesDrawer.css';
 
 type RepoBranchesDrawerProps = {
     branchData: {
@@ -50,8 +51,8 @@ const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({branchData, onCl
     return (
         <>
             {Boolean(visible) && 
-            <Drawer title="Basic Drawer" placement="right" onClose={onClose} visible={visible}>
-                {load ? getData.current.map(item => <p key={item}>{item}</p>) : <p>Загрузка</p>}
+            <Drawer title="Список веток" placement="right" onClose={onClose} visible={visible}>
+                {load ? getData.current.map(item => <p className="list_branch" key={item}>{item}</p>) : <p className="list_branch">Загрузка</p>}
             </Drawer>}
         </>
     )
