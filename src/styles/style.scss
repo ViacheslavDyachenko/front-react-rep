@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap');
+
+$red-color: #FF5555;
+$border-color: #D9D9D9;
+$plaseholder-color: #7E7E7E;
+$text-color: #000;
+$disabled-input-bgc: #F9F9F9;
+$company-hover: #208FBF;
+$black-color: black;
+
+@mixin textStyle($weight, $size) {
+    font-family: Roboto, sans-serif;
+    font-style: normal;
+    font-weight: $weight;
+    font-size: $size;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}

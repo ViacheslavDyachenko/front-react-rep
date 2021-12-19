@@ -1,13 +1,22 @@
-import React from "react"
+import React, { createContext, useContext } from "react"
 import { Link } from "react-router-dom";
-import { createThisTypeNode } from "typescript";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input"
 import RepoBranchesDrawer from "../../components/RepoBranchesDrawer";
 import RepoTile from "../../components/RepoTile";
 import SearchIcon from "../../components/SearchIcon";
 import { GitHubStore } from "../../store/GitHubStore/GitHubStore";
-import './ReposSearchPage.css';
+import style from './ReposSearchPage.module.scss';
+
+const RepoContext = createContext({
+    branchData: {owner: '', repo: ''},
+    showTile: false,
+    onChange: (event: React.FormEvent) => {}
+  })
+
+const Provider = RepoContext.Provider;
+
+export const useReposContext = () => React.useContext(RepoContext);
 
 const ReposSearchPage = () => {
     let [value, setValue] = React.useState('');
@@ -44,7 +53,6 @@ const ReposSearchPage = () => {
 
     const showDrawer = (event: React.MouseEvent) => {
         let elem = event.currentTarget as HTMLDivElement; 
-        if(elem.className !== 'repositoty') return;
         for(let item of getData.current) {
             if(elem.id === item.item.title) {
                 setOwner(owner = item.owner);
@@ -117,15 +125,17 @@ const ReposSearchPage = () => {
 
     return (
         <>
-            <div className="search">
-                <Input value={value} placeholder="Введите название организации" onChange={onChange} />
-                <Button children={<SearchIcon />} onClick={onClick} disabled={showTile} />
-            </div>
-            <div className="repositories">                                        
-                {Boolean(getData.current[0].item.title) 
-                && getData.current.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
-            </div>
-            {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer branchData={{owner: owner, repo: repo}} onClose={onClose} visible={visible}  /></Link> }
+            <Provider value={{branchData: {owner: owner, repo: repo}, showTile, onChange}}>
+                <div className={style.search}>
+                    <Input value={value} placeholder="Введите название организации" />
+                    <Button children={<SearchIcon />} onClick={onClick} />
+                </div>
+                <div className={style.repositories}>                                        
+                    {Boolean(getData.current[0].item.title) 
+                    && getData.current.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
+                </div>
+                {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer onClose={onClose} visible={visible}  /></Link> }
+            </Provider>
         </>
     )
 }

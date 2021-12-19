@@ -1,0 +1,4 @@
+@import '../../styles/style.scss';
+.list_branch {
+    @include textStyle(italic, 16px);
+}

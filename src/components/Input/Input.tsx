@@ -1,18 +1,19 @@
-import './Input.css';
+import { useReposContext } from '../../Pages/ReposSearchPage/ReposSearchPage';
+import style from './Input.module.scss';
 
 type InputProps = {
     value: string,
     placeholder: string,
-    onChange: (event: React.FormEvent) => void
 }
 
-const Input: React.FC<InputProps> = ({value, placeholder, onChange}: InputProps) => {
+const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => {
+    const RepoContext = useReposContext();
     return <input 
     type="text"
-    className="search_input"
+    className={style.search_input}
     value={value}
     placeholder={placeholder}
-    onChange={onChange} />
+    onChange={RepoContext.onChange} />
 }
 
 export default Input;

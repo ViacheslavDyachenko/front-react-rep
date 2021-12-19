@@ -1,4 +1,4 @@
-import './Avatar.css';
+import style from './Avatar.module.scss';
 
 type AvatarProps = {
     src?: string,
@@ -6,7 +6,7 @@ type AvatarProps = {
 }
 
 const Avatar: React.FC<AvatarProps> = ({src, alt}: AvatarProps) => {
-    return Boolean(src) ? <img className="avatar" src={src}/> : <span className="avatar">{alt}</span>
+    return Boolean(src) ? <img className={style.avatar} src={src}/> : <span className={style.avatar}>{alt}</span>
 }
 
 export default Avatar;

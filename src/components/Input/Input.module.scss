@@ -1,0 +1,23 @@
+@import '../../styles/style.scss';
+.search_input {
+    padding: 0;
+    width: 295px;
+    height: 50px;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    @include textStyle(normal, 14px);
+    line-height: 16px;
+    color: $plaseholder-color;
+    text-indent: 12px;
+}
+.search_input:focus {
+    border: 1px solid $red-color;
+    outline: 0;
+    color: $text-color;
+    @include textStyle(normal, 14px);
+    line-height: 16px;
+}
+.search_input:disabled {
+    background-color: $disabled-input-bgc;
+    color: $plaseholder-color;
+}

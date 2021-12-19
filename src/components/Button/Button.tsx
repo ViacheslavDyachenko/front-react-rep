@@ -1,19 +1,20 @@
 import { Link } from 'react-router-dom';
-import './Button.css';
+import { useReposContext } from '../../Pages/ReposSearchPage/ReposSearchPage';
+import style from './Button.module.scss';
 
 type ButtonProps = {
     children: React.ReactNode,
     onClick: (e: React.MouseEvent) => void,
-    disabled: boolean
 }
 
-const Button: React.FC<ButtonProps> = ({children, onClick, disabled}: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({children, onClick}: ButtonProps) => {
+    const RepoContext = useReposContext();
     return (
         <Link to='/repos'>
             <button 
-            className="search_btn"
+            className={style.search_btn}
             onClick={onClick}
-            disabled={disabled}>
+            disabled={RepoContext.showTile}>
             {children}
             </button>
         </Link>

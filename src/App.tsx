@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ReposSearchPage from './Pages/ReposSearchPage/ReposSearchPage';
-import './styles/style.css';
+import './styles/style.scss';
 
 function App() {
   return (
