@@ -8,7 +8,7 @@ export enum HTTPMethod {
 export type RequestParams = {
     method: HTTPMethod; // Метод запроса, GET или POST
     endpoint: string; // API-endpoint, на который делается запрос
-    headers: Record<string, string>; // Объект с передаваемыми HTTP-заголовками
+    headers: Record<string, any>; // Объект с передаваемыми HTTP-заголовками
 
     /**
      * Объект с данными запроса.

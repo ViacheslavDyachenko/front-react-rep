@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from "react"
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input"
@@ -16,7 +17,7 @@ const RepoContext = createContext({
 
 const Provider = RepoContext.Provider;
 
-export const useReposContext = () => React.useContext(RepoContext);
+export const useReposContext = () => useContext(RepoContext);
 
 const ReposSearchPage = () => {
     let [value, setValue] = React.useState('');
@@ -51,6 +52,20 @@ const ReposSearchPage = () => {
     let [owner, setOwner] = React.useState('');
     let [repo, setRepo] = React.useState('');
 
+    let [listRepo, setListRepo] = React.useState([{
+                                                    src: "",
+                                                    owner: "",
+                                                    repo: "", 
+                                                    item: {
+                                                        title: "",
+                                                        company: "",
+                                                        counter_star: 0,
+                                                        last_update: ""}
+                                                    }])
+
+    let [pageNum, setPageNum] = React.useState(2);
+
+
     const showDrawer = (event: React.MouseEvent) => {
         let elem = event.currentTarget as HTMLDivElement; 
         for(let item of getData.current) {
@@ -73,7 +88,8 @@ const ReposSearchPage = () => {
     }
 
     const onClick = (): void => {
-        setShowTile(true)
+        setShowTile(true);
+        setPageNum(2);
         
     }
     React.useEffect(() => {
@@ -82,7 +98,7 @@ const ReposSearchPage = () => {
             setTile((): { src: string; owner: string; repo: string;  item: { title: string; company: string; counter_star: number; last_update: string; }; }[] => {
                     (async () => {
                         try {
-                        let promise = await new GitHubStore().getOrganizationReposList({ organizationName: value });
+                        let promise = await new GitHubStore().getOrganizationReposNextList({ organizationName: value }, 1);
                         tile = await promise[1].map((item: any) => {
                             return {
                                 src: item.owner.avatar_url,
@@ -98,7 +114,10 @@ const ReposSearchPage = () => {
                         });
                         getData.current.length = 0;
                         getData.current.push(...tile);
+                        setListRepo(listRepo = getData.current);
+                        
                         setShowTile(false);
+                        
                         
                     }
                     catch (e) {
@@ -115,6 +134,7 @@ const ReposSearchPage = () => {
                         }];
                         getData.current.length = 0;
                         getData.current.push(...tile);
+                        setListRepo(listRepo = getData.current);
                         setShowTile(false);
                     }
                     })();
@@ -123,6 +143,47 @@ const ReposSearchPage = () => {
         }
     }, [showTile])
 
+    const fetchData = async() => {
+        async function fetchFn() {
+            try {
+                let promise = await new GitHubStore().getOrganizationReposNextList({ organizationName: value }, pageNum);
+                tile = await promise[1].map((item: any) => {
+                    return {
+                        src: item.owner.avatar_url,
+                        owner: item.owner.login,
+                        repo: item.name,
+                        item: {
+                            title: item.name,
+                            company: item.owner.login,
+                            counter_star: item.watchers,
+                            last_update: 'Updated ' + new Date(item.updated_at).getDay() + ' ' + new Date(item.updated_at).toLocaleString('en', { month: 'long' })
+                        }
+                    };
+                });
+                getData.current.push(...tile);
+                setListRepo(listRepo = getData.current);
+                
+            }
+            catch (e) {
+                tile = [{
+                    src: "",
+                    owner: "",
+                    repo: "", 
+                    item: {
+                        title: "",
+                        company: "",
+                        counter_star: 0,
+                        last_update: ""
+                    }
+                }];
+                getData.current.push(...tile);
+                setListRepo(listRepo = getData.current);
+            }
+        };
+        await fetchFn();
+        setPageNum(++pageNum);
+    }
+
     return (
         <>
             <Provider value={{branchData: {owner: owner, repo: repo}, showTile, onChange}}>
@@ -130,10 +191,16 @@ const ReposSearchPage = () => {
                     <Input value={value} placeholder="Введите название организации" />
                     <Button children={<SearchIcon />} onClick={onClick} />
                 </div>
-                <div className={style.repositories}>                                        
-                    {Boolean(getData.current[0].item.title) 
-                    && getData.current.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
-                </div>
+                    {Boolean(listRepo[0].item.title)
+                    && <InfiniteScroll
+                    className={style.repositories}
+                    next={fetchData}
+                    hasMore={true}
+                    dataLength={listRepo.length}
+                    loader={<h4>Loading...</h4>}>
+                        {Boolean(listRepo[0].item.title)
+                        && listRepo.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
+                    </InfiniteScroll>}
                 {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer onClose={onClose} visible={visible}  /></Link> }
             </Provider>
         </>
