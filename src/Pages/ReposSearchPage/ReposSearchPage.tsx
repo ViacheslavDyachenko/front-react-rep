@@ -6,7 +6,7 @@ import Input from "../../components/Input/Input"
 import RepoBranchesDrawer from "../../components/RepoBranchesDrawer";
 import RepoTile from "../../components/RepoTile";
 import SearchIcon from "../../components/SearchIcon";
-import { GitHubStore } from "../../store/GitHubStore/GitHubStore";
+import ReposListStore from "../../store/ReposListStore";
 import style from './ReposSearchPage.module.scss';
 
 const RepoContext = createContext({
@@ -20,55 +20,34 @@ const Provider = RepoContext.Provider;
 export const useReposContext = () => useContext(RepoContext);
 
 const ReposSearchPage = () => {
-    let [value, setValue] = React.useState('');
-
-    let [tile, setTile] = React.useState([{
-                                            src: "",
-                                            owner: "",
-                                            repo: "", 
-                                            item: {
-                                                title: "",
-                                                company: "",
-                                                counter_star: 0,
-                                                last_update: ""
-                                            }
-                                            }]);
 
     let [showTile, setShowTile] = React.useState(false);
 
-    const getData = React.useRef([{
-                                    src: "",
-                                    owner: "",
-                                    repo: "", 
-                                    item: {
-                                        title: "",
-                                        company: "",
-                                        counter_star: 0,
-                                        last_update: ""}
-                                    }]);
+    const getData = React.useRef<ReposListStore>(new ReposListStore());
+
+    const [repoList, setRepoList] = React.useState([{
+        src: "",
+            owner: "",
+            repo: "", 
+            item: {
+                title: "",
+                company: "",
+                counter_star: 0,
+                last_update: ""}
+    }]);
+
+    const [value, setValue] = React.useState('');
 
     const [visible, setVisible] = React.useState(false);
 
     let [owner, setOwner] = React.useState('');
     let [repo, setRepo] = React.useState('');
 
-    let [listRepo, setListRepo] = React.useState([{
-                                                    src: "",
-                                                    owner: "",
-                                                    repo: "", 
-                                                    item: {
-                                                        title: "",
-                                                        company: "",
-                                                        counter_star: 0,
-                                                        last_update: ""}
-                                                    }])
-
-    let [pageNum, setPageNum] = React.useState(2);
-
+    let [hasMore, setHasMore] = React.useState(true);
 
     const showDrawer = (event: React.MouseEvent) => {
         let elem = event.currentTarget as HTMLDivElement; 
-        for(let item of getData.current) {
+        for(let item of getData.current.result) {
             if(elem.id === item.item.title) {
                 setOwner(owner = item.owner);
                 setRepo(repo = item.item.title);
@@ -84,104 +63,33 @@ const ReposSearchPage = () => {
 
     const onChange = (event: React.FormEvent): void => {
         let element = event.target as HTMLInputElement;
+        getData.current.setValue(element.value);
         setValue(element.value);
     }
 
     const onClick = (): void => {
         setShowTile(true);
-        setPageNum(2);
+        getData.current.pageNum = 1;
+        setHasMore(true);
         
     }
     React.useEffect(() => {
-        
         if(showTile){
-            setTile((): { src: string; owner: string; repo: string;  item: { title: string; company: string; counter_star: number; last_update: string; }; }[] => {
-                    (async () => {
-                        try {
-                        let promise = await new GitHubStore().getOrganizationReposNextList({ organizationName: value }, 1);
-                        tile = await promise[1].map((item: any) => {
-                            return {
-                                src: item.owner.avatar_url,
-                                owner: item.owner.login,
-                                repo: item.name,
-                                item: {
-                                    title: item.name,
-                                    company: item.owner.login,
-                                    counter_star: item.watchers,
-                                    last_update: 'Updated ' + new Date(item.updated_at).getDay() + ' ' + new Date(item.updated_at).toLocaleString('en', { month: 'long' })
-                                }
-                            };
-                        });
-                        getData.current.length = 0;
-                        getData.current.push(...tile);
-                        setListRepo(listRepo = getData.current);
-                        
-                        setShowTile(false);
-                        
-                        
-                    }
-                    catch (e) {
-                        tile = [{
-                            src: "",
-                            owner: "",
-                            repo: "", 
-                            item: {
-                                title: "",
-                                company: "",
-                                counter_star: 0,
-                                last_update: ""
-                            }
-                        }];
-                        getData.current.length = 0;
-                        getData.current.push(...tile);
-                        setListRepo(listRepo = getData.current);
-                        setShowTile(false);
-                    }
-                    })();
-                return tile;
-            });
+            getData.current.reposList().then(() => setRepoList(getData.current.result));
+            setShowTile(false);
         }
     }, [showTile])
 
-    const fetchData = async() => {
-        async function fetchFn() {
-            try {
-                let promise = await new GitHubStore().getOrganizationReposNextList({ organizationName: value }, pageNum);
-                tile = await promise[1].map((item: any) => {
-                    return {
-                        src: item.owner.avatar_url,
-                        owner: item.owner.login,
-                        repo: item.name,
-                        item: {
-                            title: item.name,
-                            company: item.owner.login,
-                            counter_star: item.watchers,
-                            last_update: 'Updated ' + new Date(item.updated_at).getDay() + ' ' + new Date(item.updated_at).toLocaleString('en', { month: 'long' })
-                        }
-                    };
-                });
-                getData.current.push(...tile);
-                setListRepo(listRepo = getData.current);
-                
-            }
-            catch (e) {
-                tile = [{
-                    src: "",
-                    owner: "",
-                    repo: "", 
-                    item: {
-                        title: "",
-                        company: "",
-                        counter_star: 0,
-                        last_update: ""
-                    }
-                }];
-                getData.current.push(...tile);
-                setListRepo(listRepo = getData.current);
-            }
-        };
-        await fetchFn();
-        setPageNum(++pageNum);
+    const fetchData = () => {
+        try {
+            getData.current.reposList().then(() => {
+                setRepoList(getData.current.result);           
+                if(getData.current.result.length / 10 < getData.current.pageNum - 1) setHasMore(false);
+            });
+            
+        } catch(e) {
+            console.log(e);            
+        }        
     }
 
     return (
@@ -191,15 +99,17 @@ const ReposSearchPage = () => {
                     <Input value={value} placeholder="Введите название организации" />
                     <Button children={<SearchIcon />} onClick={onClick} />
                 </div>
-                    {Boolean(listRepo[0].item.title)
+                    {Boolean(repoList.length !== 1)
                     && <InfiniteScroll
                     className={style.repositories}
                     next={fetchData}
-                    hasMore={true}
-                    dataLength={listRepo.length}
-                    loader={<h4>Loading...</h4>}>
-                        {Boolean(listRepo[0].item.title)
-                        && listRepo.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
+                    hasMore={hasMore}
+                    dataLength={getData.current.result.length}
+                    scrollThreshold={1}
+                    loader={<h4>Загрузка</h4>}
+                    endMessage={<h4>Отображены все репозитории</h4>}>
+                        {Boolean(repoList.length !== 1)                      
+                        && repoList.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
                     </InfiniteScroll>}
                 {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer onClose={onClose} visible={visible}  /></Link> }
             </Provider>

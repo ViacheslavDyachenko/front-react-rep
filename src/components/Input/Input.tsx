@@ -6,7 +6,7 @@ type InputProps = {
     placeholder: string,
 }
 
-const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => {
+const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => {    
     const RepoContext = useReposContext();
     return <input 
     type="text"
