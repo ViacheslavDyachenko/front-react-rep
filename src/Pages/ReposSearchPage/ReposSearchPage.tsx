@@ -7,6 +7,7 @@ import RepoBranchesDrawer from "../../components/RepoBranchesDrawer";
 import RepoTile from "../../components/RepoTile";
 import SearchIcon from "../../components/SearchIcon";
 import ReposListStore from "../../store/ReposListStore";
+import useLocalStore from "../../utils/useLocalStore";
 import style from './ReposSearchPage.module.scss';
 
 const RepoContext = createContext({
@@ -23,7 +24,7 @@ const ReposSearchPage = () => {
 
     let [showTile, setShowTile] = React.useState(false);
 
-    const getData = React.useRef<ReposListStore>(new ReposListStore());
+    const getData = useLocalStore(() => new ReposListStore());
 
     const [repoList, setRepoList] = React.useState([{
         src: "",
@@ -47,7 +48,7 @@ const ReposSearchPage = () => {
 
     const showDrawer = (event: React.MouseEvent) => {
         let elem = event.currentTarget as HTMLDivElement; 
-        for(let item of getData.current.result) {
+        for(let item of getData.result) {
             if(elem.id === item.item.title) {
                 setOwner(owner = item.owner);
                 setRepo(repo = item.item.title);
@@ -63,28 +64,28 @@ const ReposSearchPage = () => {
 
     const onChange = (event: React.FormEvent): void => {
         let element = event.target as HTMLInputElement;
-        getData.current.setValue(element.value);
+        getData.setValue(element.value);
         setValue(element.value);
     }
 
     const onClick = (): void => {
         setShowTile(true);
-        getData.current.pageNum = 1;
+        getData.pageNum = 1;
         setHasMore(true);
         
     }
     React.useEffect(() => {
         if(showTile){
-            getData.current.reposList().then(() => setRepoList(getData.current.result));
+            getData.reposList().then(() => setRepoList(getData.result));
             setShowTile(false);
         }
     }, [showTile])
 
     const fetchData = () => {
         try {
-            getData.current.reposList().then(() => {
-                setRepoList(getData.current.result);           
-                if(getData.current.result.length / 10 < getData.current.pageNum - 1) setHasMore(false);
+            getData.reposList().then(() => {
+                setRepoList(getData.result);           
+                if(getData.result.length / 10 < getData.pageNum - 1) setHasMore(false);
             });
             
         } catch(e) {
@@ -104,7 +105,7 @@ const ReposSearchPage = () => {
                     className={style.repositories}
                     next={fetchData}
                     hasMore={hasMore}
-                    dataLength={getData.current.result.length}
+                    dataLength={getData.result.length}
                     scrollThreshold={1}
                     loader={<h4>Загрузка</h4>}
                     endMessage={<h4>Отображены все репозитории</h4>}>

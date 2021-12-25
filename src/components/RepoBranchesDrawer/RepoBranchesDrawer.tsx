@@ -2,9 +2,10 @@ import { Drawer } from "antd"
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useReposContext } from "../../Pages/ReposSearchPage/ReposSearchPage";
-import { GitHubStore } from "../../store/GitHubStore/GitHubStore";
 import style from './RepoBranchesDrawer.module.scss';
 import'antd/dist/antd.css';
+import RepoBranchesStore from "../../store/RepoBranchesStore";
+import useLocalStore from "../../utils/useLocalStore";
 
 type RepoBranchesDrawerProps = {
     onClose: () => void,
@@ -15,11 +16,9 @@ const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visibl
 
     const RepoContext = useReposContext();
 
-    let [branch, setBranch] = React.useState(['']);
-
     let [load, setLoad] = React.useState(false);
 
-    const getData = React.useRef(['']);
+    const getData = useLocalStore(() => new RepoBranchesStore());
 
     const {title} = useParams();
 
@@ -27,26 +26,7 @@ const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visibl
 
     React.useEffect(() => {
         if(!load){
-            setBranch((): string[] => {
-                (async() => {
-                    try {
-                        let promise = await new GitHubStore().GetBranchList({ownerName: RepoContext.branchData.owner, reposName: RepoContext.branchData.repo});
-                        branch = await promise[1].map((item: any) => {
-                            return item.name;
-                        })
-                        getData.current.length = 0;
-                        getData.current.push(...branch);
-                        setLoad(true);
-                    }
-                    catch(e) {
-                        branch = [''];
-                        getData.current.length = 0;
-                        getData.current.push(...branch);
-                        setLoad(true);
-                    }
-                })();
-                return branch;
-            })
+            getData.repoBranches(RepoContext.branchData.owner, RepoContext.branchData.repo).then(() => setLoad(getData.load));
         }
     }, [load])
     
@@ -55,7 +35,7 @@ const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visibl
         <>
             {Boolean(visible) && 
             <Drawer title={`список веток репозитория: ${title}`} placement="right" onClose={onClose} visible={visible}>
-                {load ? getData.current.map(item => <p className={style.list_branch} key={item}>{item}</p>) : <p className={style.list_branch}>Загрузка</p>}
+                {load ? getData.branch.map(item => <p className={style.list_branch} key={item}>{item}</p>) : <p className={style.list_branch}>Загрузка</p>}
             </Drawer>}
         </>
     )
