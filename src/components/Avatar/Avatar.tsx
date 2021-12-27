@@ -6,7 +6,7 @@ type AvatarProps = {
 }
 
 const Avatar: React.FC<AvatarProps> = ({src, alt}: AvatarProps) => {
-    return Boolean(src) ? <img className={style.avatar} src={src}/> : <span className={style.avatar}>{alt}</span>
+    return Boolean(src) ? <img className={style.avatar} src={src} alt=''/> : <span className={style.avatar}>{alt}</span>
 }
 
 export default Avatar;

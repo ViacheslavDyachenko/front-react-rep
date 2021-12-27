@@ -22,6 +22,6 @@ export type ApiResp =  [boolean,
                         number | StatusHTTP.BAD_STATUS]
 
  export interface IGitHubStore {
-    getOrganizationReposList(params: GetOrganizationReposListParams): Promise<ApiResp>;
+    getOrganizationReposNextList(params: GetOrganizationReposListParams, page: number): Promise<ApiResp>;
     GetBranchList(params: GetBranchListParams): Promise<ApiResp>;
 }

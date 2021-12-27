@@ -1,4 +1,5 @@
-import React, { createContext, useContext } from "react"
+import { observer } from "mobx-react-lite";
+import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button/Button";
@@ -8,114 +9,55 @@ import RepoTile from "../../components/RepoTile";
 import SearchIcon from "../../components/SearchIcon";
 import ReposListStore from "../../store/ReposListStore";
 import useLocalStore from "../../utils/useLocalStore";
+import useReposListContext from "../../utils/useReposListContext";
 import style from './ReposSearchPage.module.scss';
 
-const RepoContext = createContext({
-    branchData: {owner: '', repo: ''},
-    showTile: false,
-    onChange: (event: React.FormEvent) => {}
-  })
-
-const Provider = RepoContext.Provider;
-
-export const useReposContext = () => useContext(RepoContext);
-
 const ReposSearchPage = () => {
-
-    let [showTile, setShowTile] = React.useState(false);
+    const {Provider} = useReposListContext();
 
     const getData = useLocalStore(() => new ReposListStore());
 
-    const [repoList, setRepoList] = React.useState([{
-        src: "",
-            owner: "",
-            repo: "", 
-            item: {
-                title: "",
-                company: "",
-                counter_star: 0,
-                last_update: ""}
-    }]);
-
-    const [value, setValue] = React.useState('');
-
-    const [visible, setVisible] = React.useState(false);
-
-    let [owner, setOwner] = React.useState('');
-    let [repo, setRepo] = React.useState('');
-
-    let [hasMore, setHasMore] = React.useState(true);
-
-    const showDrawer = (event: React.MouseEvent) => {
-        let elem = event.currentTarget as HTMLDivElement; 
-        for(let item of getData.result) {
-            if(elem.id === item.item.title) {
-                setOwner(owner = item.owner);
-                setRepo(repo = item.item.title);
-            }
-        }
-
-        setVisible(true);
+    const showDrawer = (event: React.MouseEvent) => {        
+        getData.showDrawer(event);
     };
-    const onClose = () => {
-        setVisible(false);
-        
-    };
+    const onClose = () => getData.onClose();
 
     const onChange = (event: React.FormEvent): void => {
-        let element = event.target as HTMLInputElement;
-        getData.setValue(element.value);
-        setValue(element.value);
+        getData.onChange(event);
     }
 
-    const onClick = (): void => {
-        setShowTile(true);
-        getData.pageNum = 1;
-        setHasMore(true);
-        
-    }
-    React.useEffect(() => {
-        if(showTile){
-            getData.reposList().then(() => setRepoList(getData.result));
-            setShowTile(false);
-        }
-    }, [showTile])
+    const reposList = async() => getData.reposList();
+    
 
-    const fetchData = () => {
-        try {
-            getData.reposList().then(() => {
-                setRepoList(getData.result);           
-                if(getData.result.length / 10 < getData.pageNum - 1) setHasMore(false);
-            });
-            
-        } catch(e) {
-            console.log(e);            
-        }        
-    }
+    const onClick = (e: React.MouseEvent) => {
+        getData.onClick();
+        reposList();
+    };
 
+    const fetchData = getData.fetchData;
     return (
         <>
-            <Provider value={{branchData: {owner: owner, repo: repo}, showTile, onChange}}>
+            <Provider value={{branchData: {owner: getData.owner, repo: getData.repo}, showTile: getData.showTile, onChange}}>
                 <div className={style.search}>
-                    <Input value={value} placeholder="Введите название организации" />
+                    <Input value={getData.value} placeholder="Введите название организации" />
                     <Button children={<SearchIcon />} onClick={onClick} />
                 </div>
-                    {Boolean(repoList.length !== 1)
+                    {Boolean(getData.result.length !== 1)
                     && <InfiniteScroll
                     className={style.repositories}
                     next={fetchData}
-                    hasMore={hasMore}
+                    hasMore={getData.hasMore}
                     dataLength={getData.result.length}
                     scrollThreshold={1}
                     loader={<h4>Загрузка</h4>}
                     endMessage={<h4>Отображены все репозитории</h4>}>
-                        {Boolean(repoList.length !== 1)                      
-                        && repoList.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
+                        {Boolean(getData.result.length !== 1)                      
+                        && getData.result.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={showDrawer} />)}
                     </InfiniteScroll>}
-                {Boolean(owner) && Boolean(repo) && <Link to='/repos'><RepoBranchesDrawer onClose={onClose} visible={visible}  /></Link> }
+                {Boolean(getData.visible) && <Link to='/repos'><RepoBranchesDrawer onClose={onClose} visible={getData.visible}  /></Link> }
             </Provider>
         </>
     )
 }
 
-export default ReposSearchPage;
+export default observer(ReposSearchPage);

@@ -5,11 +5,6 @@ import {ApiResp, GetOrganizationReposListParams, GetBranchListParams, IGitHubSto
 export class GitHubStore implements IGitHubStore {
     private readonly apiStore = new ApiStore('https://api.github.com');
 
-    async getOrganizationReposList(params: GetOrganizationReposListParams): Promise<ApiResp> {
-        let response = await this.apiStore.request({method: HTTPMethod.GET, endpoint: `/orgs/${params.organizationName}/repos`, headers: {}});
-        return [response.success, response.data, response.status];
-    }
-
     async getOrganizationReposNextList(params: GetOrganizationReposListParams, page: number): Promise<ApiResp> {
         let response = await this.apiStore.request({method: HTTPMethod.GET, endpoint: `/orgs/${params.organizationName}/repos?per_page=10&page=${page}`, headers: {}});
         return [response.success, response.data, response.status];
@@ -20,4 +15,3 @@ export class GitHubStore implements IGitHubStore {
         return [response.success, response.data, response.status];
     }
 }
-// ?per_page=30&page=3

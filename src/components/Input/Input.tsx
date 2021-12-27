@@ -1,4 +1,4 @@
-import { useReposContext } from '../../Pages/ReposSearchPage/ReposSearchPage';
+import useReposListContext from '../../utils/useReposListContext';
 import style from './Input.module.scss';
 
 type InputProps = {
@@ -6,14 +6,15 @@ type InputProps = {
     placeholder: string,
 }
 
-const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => {    
-    const RepoContext = useReposContext();
+const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => { 
+    const {context} = useReposListContext();
+    
     return <input 
     type="text"
     className={style.search_input}
     value={value}
     placeholder={placeholder}
-    onChange={RepoContext.onChange} />
+    onChange={context.onChange} />
 }
 
 export default Input;

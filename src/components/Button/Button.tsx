@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useReposContext } from '../../Pages/ReposSearchPage/ReposSearchPage';
+import useReposListContext from '../../utils/useReposListContext';
 import style from './Button.module.scss';
 
 type ButtonProps = {
@@ -8,13 +8,13 @@ type ButtonProps = {
 }
 
 const Button: React.FC<ButtonProps> = ({children, onClick}: ButtonProps) => {
-    const RepoContext = useReposContext();
+    const {context} = useReposListContext();
     return (
         <Link to='/repos'>
             <button 
             className={style.search_btn}
             onClick={onClick}
-            disabled={RepoContext.showTile}>
+            disabled={context.showTile}>
             {children}
             </button>
         </Link>
