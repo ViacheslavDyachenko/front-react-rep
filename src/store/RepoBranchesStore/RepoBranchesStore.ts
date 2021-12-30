@@ -5,7 +5,7 @@ import { GitHubStore } from "../GitHubStore/GitHubStore";
 type PrivateFileds = "_load";
 
 export default class RepoBranchesStore implements ILocalStore {
-    private _branch: string[] = [''];
+    private _branch: {name: string}[] = [{name: ''}];
     private _load: boolean = false;
 
     constructor() {
@@ -29,19 +29,18 @@ export default class RepoBranchesStore implements ILocalStore {
     }
     repoBranches = flow(function*(this: RepoBranchesStore, ownerName: string, reposName: string) {
         try {
-            let promise = yield new GitHubStore().GetBranchList({ownerName: ownerName, reposName: reposName});
-            this._branch = yield promise[1].map((item: any) => {
-                return item.name;
-            })
+            if(!this._branch[0].name) this._branch.shift();
+            let response = yield new GitHubStore().GetBranchList({ownerName: ownerName, reposName: reposName});
+            this._branch = yield this._branch.concat(response.data);
             this._load = true;
         }
         catch(e) {
-            this._branch = [''];
+            this._branch = [{name: ''}];
             this._load = true;
         }
     })
-    destroy(): void {
-        this._branch = [''];
+    destroy(): void {        
+        this._branch = [{name: ''}];
         this._load = false;
     }
 }

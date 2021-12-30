@@ -12,8 +12,8 @@ type RepoTileProps = {
     item: {
         title?: string,
         company?: string,
-        counter_star?: number,
-        last_update?: string
+        counterStar?: number,
+        lastUpdate?: string
     },
     onClick: (event: React.MouseEvent) => void
 }
@@ -28,8 +28,8 @@ const RepoTile: React.FC<RepoTileProps> = ({src, alt, item, onClick}: RepoTilePr
                     <p className={style.company}>{item.company}</p>
                     <div className={style.details}>
                         <StarIcon />
-                        <div className={style.counter_star}>{item.counter_star}</div>
-                        <p className={style.last_update}>{item.last_update}</p>
+                        <div className={style.counter_star}>{item.counterStar}</div>
+                        <p className={style.last_update}>{item.lastUpdate}</p>
                     </div>
                 </div>
             </div>
@@ -37,4 +37,4 @@ const RepoTile: React.FC<RepoTileProps> = ({src, alt, item, onClick}: RepoTilePr
     )
 }
 
-export default RepoTile;
+export default React.memo(RepoTile);

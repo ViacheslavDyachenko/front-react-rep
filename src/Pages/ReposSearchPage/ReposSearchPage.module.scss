@@ -1,3 +1,4 @@
+@import '../../styles/style.scss';
 .search {
     margin: 20px 20px;
     font-size: 0;
@@ -7,4 +8,9 @@
     grid-template-columns: 357px;
     row-gap: 16px;
     margin: 0 0 0 20px;
+}
+.error {
+    @include textStyle(normal, 16px);
+    color: $red-color;
+    margin: -20px 20px 0;
 }

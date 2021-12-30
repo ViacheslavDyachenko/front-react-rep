@@ -1,3 +1,4 @@
+import React from 'react';
 import useReposListContext from '../../utils/useReposListContext';
 import style from './Input.module.scss';
 
@@ -17,4 +18,4 @@ const Input: React.FC<InputProps> = ({value, placeholder}: InputProps) => {
     onChange={context.onChange} />
 }
 
-export default Input;
+export default React.memo(Input);

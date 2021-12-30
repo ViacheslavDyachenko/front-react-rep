@@ -2,9 +2,10 @@ import { action, computed, flow, makeObservable, observable } from "mobx";
 import { ILocalStore } from "../../utils/useLocalStore/useLocalStore";
 import { GitHubStore } from "../GitHubStore/GitHubStore";
 
-type PrivateFileds =  "_value" | "_showTile" | "_visible" | "_hasMore" ;
+type PrivateFileds =  "_value" | "_showTile" | "_visible" | "_hasMore" | "_loadStatusError";
 
 export default class ReposListStore implements ILocalStore{
+    private _gitHubStore = new GitHubStore();
     private  _value: string = '';
     private _pageNum: number = 0;
     private _result: {
@@ -14,8 +15,8 @@ export default class ReposListStore implements ILocalStore{
         item: {
             title: string,
             company: string,
-            counter_star: number,
-            last_update: string}
+            counterStar: number,
+            lastUpdate: string}
         }[] = [{
             src: "",
             owner: "",
@@ -23,14 +24,15 @@ export default class ReposListStore implements ILocalStore{
             item: {
                 title: "",
                 company: "",
-                counter_star: 0,
-                last_update: ""}
+                counterStar: 0,
+                lastUpdate: ""}
             }];
     private _showTile: boolean = false;
     private _visible: boolean = false;
     private _owner: string = '';
     private _repo: string = '';
     private _hasMore: boolean = true;
+    private _loadStatusError: null | 'forbidden' | 'notFound' | 'BAD_STATUS' = null;
     
     constructor() {
         makeObservable<ReposListStore, PrivateFileds>(this, {
@@ -38,6 +40,7 @@ export default class ReposListStore implements ILocalStore{
             _showTile: observable,
             _visible: observable,
             _hasMore: observable,
+            _loadStatusError: observable,
             showDrawer: action,
             onClose: action,
             onChange: action,
@@ -49,7 +52,12 @@ export default class ReposListStore implements ILocalStore{
             showTile: computed,
             visible: computed,
             hasMore: computed,
+            loadStatusError: computed
         })
+    }
+
+    get loadStatusError() {
+        return this._loadStatusError;
     }
 
     get visible() {
@@ -101,6 +109,7 @@ export default class ReposListStore implements ILocalStore{
     };
 
     onChange = (event: React.FormEvent): void => {
+        
         let element = event.target as HTMLInputElement;
         
         this._value = element.value;
@@ -110,6 +119,7 @@ export default class ReposListStore implements ILocalStore{
         this._showTile = true;
         this._pageNum = 1;
         this._hasMore = true;
+        this.reposList();
         
     }
     reposList = flow(function* (this: ReposListStore) {
@@ -121,35 +131,39 @@ export default class ReposListStore implements ILocalStore{
                                                 item: {
                                                     title: "",
                                                     company: "",
-                                                    counter_star: 0,
-                                                    last_update: ""}
+                                                    counterStar: 0,
+                                                    lastUpdate: ""}
                                                 }];
-        
+        if(!this._result[0].item.title) this._result.shift();
+        let response = yield this._gitHubStore.getOrganizationReposNextList({ organizationName: this._value }, this._pageNum);
         try {
-            let promise = yield new GitHubStore().getOrganizationReposNextList({ organizationName: this._value }, this._pageNum);
-            if(!this._result[0].item.title) this._result.shift();
-            this._result.push(...yield promise[1].map((item: any) => {
-                return {
-                    src: item.owner.avatar_url,
-                    owner: item.owner.login,
-                    repo: item.name,
-                    item: {
-                        title: item.name,
-                        company: item.owner.login,
-                        counter_star: item.watchers,
-                        last_update: 'Updated ' + new Date(item.updated_at).getDay() + ' ' + new Date(item.updated_at).toLocaleString('en', { month: 'long' })
-                    }
-                };
-            }));
+            this._result = yield this._result.concat(response.data);
             this._showTile = false;
         } catch(e) {
-            console.log(e);            
-        } 
+            this._showTile = false;
+        }
+
+        if(response.status === 404) this._loadStatusError = 'notFound';
+        if(response.status === 403) {
+            this._result = [{
+                src: "",
+                owner: "",
+                repo: "", 
+                item: {
+                    title: "",
+                    company: "",
+                    counterStar: 0,
+                    lastUpdate: ""}
+                }]
+            this._loadStatusError = 'forbidden';
+        };
+        if(response.status === 'BAD_STATUS') this._loadStatusError = 'BAD_STATUS';
+        if(response.status === 200) this._loadStatusError = null;
         this._pageNum++;
     });
     
     fetchData = async() => {
-        
+        if(this.result.length === 1) return;
         try {
             this._showTile = true;
             await this.reposList().then(action(() => {
@@ -168,8 +182,8 @@ export default class ReposListStore implements ILocalStore{
             item: {
                 title: "",
                 company: "",
-                counter_star: 0,
-                last_update: ""}
+                counterStar: 0,
+                lastUpdate: ""}
             }];
         this._pageNum = 0;
         this._value = '';

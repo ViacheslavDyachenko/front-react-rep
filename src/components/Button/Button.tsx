@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import useReposListContext from '../../utils/useReposListContext';
 import style from './Button.module.scss';
@@ -21,4 +22,4 @@ const Button: React.FC<ButtonProps> = ({children, onClick}: ButtonProps) => {
     )
 }
 
-export default Button;
+export default React.memo(Button);

@@ -6,7 +6,9 @@
  * Выберите любой запрос из публичного API GitHub.
  */
 
-import { StatusHTTP } from "../../shared/store/ApiStore/types";
+import { StatusHTTP } from "../RootStore/ApiStore/types";
+import { BranchesItemModel } from "../Models/gitHub/BranchesItem";
+import { RepoItemModel } from "../Models/gitHub/RepoItem";
 
 export type GetOrganizationReposListParams = {
     organizationName: string
@@ -17,11 +19,11 @@ export type GetBranchListParams = {
     reposName: string
 }
 
-export type ApiResp =  [boolean,
-                        any,
-                        number | StatusHTTP.BAD_STATUS]
+export type ApiResp<RepoItemApi> =  {success: boolean,
+                        data: RepoItemApi,
+                        status: number | StatusHTTP.BAD_STATUS}
 
  export interface IGitHubStore {
-    getOrganizationReposNextList(params: GetOrganizationReposListParams, page: number): Promise<ApiResp>;
-    GetBranchList(params: GetBranchListParams): Promise<ApiResp>;
+    getOrganizationReposNextList(params: GetOrganizationReposListParams, page: number): Promise<ApiResp<RepoItemModel>>;
+    GetBranchList(params: GetBranchListParams): Promise<ApiResp<BranchesItemModel>>;
 }
