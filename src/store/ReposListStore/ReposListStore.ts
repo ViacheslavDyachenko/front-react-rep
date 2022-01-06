@@ -1,6 +1,6 @@
 import { action, computed, flow, makeObservable, observable } from "mobx";
-import { ILocalStore } from "../../utils/useLocalStore/useLocalStore";
-import { GitHubStore } from "../GitHubStore/GitHubStore";
+import { ILocalStore } from "utils/useLocalStore/useLocalStore";
+import { GitHubStore } from "store/GitHubStore/GitHubStore";
 
 type PrivateFileds =  "_value" | "_showTile" | "_visible" | "_hasMore" | "_loadStatusError";
 

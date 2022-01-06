@@ -1,5 +1,5 @@
 import React from 'react';
-import useReposListContext from '../../utils/useReposListContext';
+import useReposListContext from 'utils/useReposListContext';
 import style from './Input.module.scss';
 
 type InputProps = {

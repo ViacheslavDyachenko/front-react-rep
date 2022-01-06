@@ -1,7 +1,7 @@
-import { ApiResponse, HTTPMethod } from '../RootStore/ApiStore/types';
+import { ApiResponse, HTTPMethod } from 'store/RootStore/ApiStore/types';
 import {ApiResp, GetOrganizationReposListParams, GetBranchListParams, IGitHubStore} from "./types";
-import { normalizeRepoItem, RepoItemApi, RepoItemModel } from '../Models/gitHub/RepoItem';
-import { BranchesItemApi, BranchesItemModel, normalizeBranchesItem } from '../Models/gitHub/BranchesItem';
+import { normalizeRepoItem, RepoItemApi, RepoItemModel } from 'store/Models/gitHub/RepoItem';
+import { BranchesItemApi, BranchesItemModel, normalizeBranchesItem } from 'store/Models/gitHub/BranchesItem';
 import rootStore from '../RootStore';
 
 export class GitHubStore implements IGitHubStore {

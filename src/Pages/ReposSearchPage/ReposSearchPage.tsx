@@ -2,15 +2,15 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
-import Button from "../../components/Button/Button";
-import Input from "../../components/Input/Input"
-import Loader from "../../components/Loader";
-import RepoBranchesDrawer from "../../components/RepoBranchesDrawer";
-import RepoTile from "../../components/RepoTile";
-import SearchIcon from "../../components/SearchIcon";
-import ReposListStore from "../../store/ReposListStore";
-import useLocalStore from "../../utils/useLocalStore";
-import useReposListContext from "../../utils/useReposListContext";
+import Button from "components/Button";
+import Input from "components/Input"
+import Loader from "components/Loader";
+import RepoBranchesDrawer from "components/RepoBranchesDrawer";
+import RepoTile from "components/RepoTile";
+import SearchIcon from "components/SearchIcon";
+import ReposListStore from "store/ReposListStore";
+import useLocalStore from "utils/useLocalStore";
+import useReposListContext from "utils/useReposListContext";
 import style from './ReposSearchPage.module.scss';
 
 const ReposSearchPage = () => {
@@ -35,7 +35,7 @@ const ReposSearchPage = () => {
             <Provider value={providerValue}>
                 <div className={style.search}>
                     <Input value={getData.value} placeholder="Введите название организации" />
-                    <Button children={searchIcon} onClick={getData.onClick} />
+                    <Button onClick={getData.onClick}>{searchIcon}</Button>
                 </div>
                     {getData.loadStatusError === 'notFound' && <h4 className={style.error}>Вы ввели не существующую организацию</h4>}
                     {getData.loadStatusError === 'forbidden' && <h4 className={style.error}>Превышен лимит запросов, повторите попытку через время</h4>}

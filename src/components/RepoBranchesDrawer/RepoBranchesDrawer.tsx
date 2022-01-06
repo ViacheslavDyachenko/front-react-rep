@@ -3,11 +3,11 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import style from './RepoBranchesDrawer.module.scss';
 import'antd/dist/antd.css';
-import RepoBranchesStore from "../../store/RepoBranchesStore";
-import useLocalStore from "../../utils/useLocalStore";
-import useReposListContext from "../../utils/useReposListContext";
+import RepoBranchesStore from "store/RepoBranchesStore";
+import useLocalStore from "utils/useLocalStore";
+import useReposListContext from "utils/useReposListContext";
 import { observer } from "mobx-react-lite";
-import Loader from "../Loader";
+import Loader from "components/Loader";
 
 type RepoBranchesDrawerProps = {
     onClose: () => void,

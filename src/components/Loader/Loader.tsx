@@ -1,3 +1,5 @@
+import React from "react";
+
 const Loader = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" style={{margin: 'auto', background: 'rgba(255, 255, 255, 0)', display: 'block'}} width="71px" height="71px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">

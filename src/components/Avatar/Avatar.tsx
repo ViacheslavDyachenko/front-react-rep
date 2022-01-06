@@ -1,3 +1,4 @@
+import React from 'react';
 import style from './Avatar.module.scss';
 
 type AvatarProps = {

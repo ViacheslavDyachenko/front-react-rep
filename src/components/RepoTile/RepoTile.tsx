@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Avatar from "../Avatar/Avatar"
-import StarIcon from "../StarIcon/StarIcon"
+import Avatar from "components/Avatar"
+import StarIcon from "components/StarIcon"
 import style from "./RepoTile.module.scss";
 
 type RepoTileProps = {

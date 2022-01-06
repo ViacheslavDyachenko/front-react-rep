@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useReposListContext from '../../utils/useReposListContext';
+import useReposListContext from 'utils/useReposListContext';
 import style from './Button.module.scss';
 
 type ButtonProps = {
