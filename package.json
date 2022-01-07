@@ -6,9 +6,11 @@
   "repository": "https://github.com/ViacheslavDyachenko/front-react-rep",
   "author": "ViacheslavDyachenko",
   "license": "MIT",
+  "homepage": "https://viacheslavdyachenko.github.io/front-react-rep/",
   "scripts": {
     "dev": "npx webpack serve --mode=development",
-    "build": "npx webpack serve --mode=production"
+    "build": "npx webpack build --mode=production",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",
@@ -29,6 +31,7 @@
     "babel-polyfill": "^6.26.0",
     "css-loader": "^6.5.1",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.5",
     "node-sass": "^7.0.1",
