@@ -19,6 +19,8 @@ if (document.body.getBoundingClientRect().width <= 360) {
     widthDrawer = '300px';
 } else if(document.body.getBoundingClientRect().width <= 400) {
     widthDrawer = '350px';
+} else {
+    widthDrawer = '378px';
 }
 
 const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visible}: RepoBranchesDrawerProps) => {
