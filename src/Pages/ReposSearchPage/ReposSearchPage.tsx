@@ -37,20 +37,20 @@ const ReposSearchPage = () => {
                     <Input value={getData.value} placeholder="Введите название организации" />
                     <Button onClick={getData.onClick}>{searchIcon}</Button>
                 </div>
-                    {getData.loadStatusError === 'notFound' && <h4 className={style.error}>Вы ввели не существующую организацию</h4>}
-                    {getData.loadStatusError === 'forbidden' && <h4 className={style.error}>Превышен лимит запросов, повторите попытку через время</h4>}
-                    {getData.loadStatusError === 'BAD_STATUS' && <h4 className={style.error}>Что-то пошло не так, перезагрузите страницу</h4>}
-                    {Boolean(getData.result.length !== 1)
-                    && <InfiniteScroll
-                    className={style.repositories}
-                    next={getData.fetchData}
-                    hasMore={getData.hasMore}
-                    dataLength={getData.result.length}
-                    scrollThreshold={1}
-                    loader={<Loader />}>
-                        {Boolean(getData.result.length !== 1)                      
-                        && getData.result.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={getData.showDrawer} />)}
-                    </InfiniteScroll>}
+                {getData.loadStatusError === 'notFound' && <h4 className={style.error}>Вы ввели не существующую организацию</h4>}
+                {getData.loadStatusError === 'forbidden' && <h4 className={style.error}>Превышен лимит запросов, повторите попытку через время</h4>}
+                {getData.loadStatusError === 'BAD_STATUS' && <h4 className={style.error}>Что-то пошло не так, перезагрузите страницу</h4>}
+                {Boolean(getData.result.length !== 1)
+                && <InfiniteScroll
+                className={style.repositories}
+                next={getData.fetchData}
+                hasMore={getData.hasMore}
+                dataLength={getData.result.length}
+                scrollThreshold={1}
+                loader={<Loader />}>
+                    {Boolean(getData.result.length !== 1)                      
+                    && getData.result.map((item) => <RepoTile src={item.src} key={item.item.title} item={item.item} onClick={getData.showDrawer} />)}
+                </InfiniteScroll>}
                 {Boolean(getData.visible) && <Link to='/repos'><RepoBranchesDrawer onClose={getData.onClose} visible={getData.visible}  /></Link> }
             </Provider>
         </>

@@ -14,3 +14,9 @@
     color: $red-color;
     margin: -20px 20px 0;
 }
+@media screen and (max-width: 400px) {
+    .repositories {
+        grid-template-columns: 100%;
+        margin-right: 20px;
+    }
+}

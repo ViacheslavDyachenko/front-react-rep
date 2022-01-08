@@ -14,6 +14,13 @@ type RepoBranchesDrawerProps = {
     visible: true | false
 }
 
+let widthDrawer: string | null = null;
+if (document.body.getBoundingClientRect().width <= 360) {
+    widthDrawer = '300px';
+} else if(document.body.getBoundingClientRect().width <= 400) {
+    widthDrawer = '350px';
+}
+
 const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visible}: RepoBranchesDrawerProps) => {
     const {context} = useReposListContext();
 
@@ -31,7 +38,7 @@ const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ onClose, visibl
     return (
         <>
             {Boolean(visible) && 
-            <Drawer title={`список веток репозитория: ${title}`} placement="right" onClose={onClose} visible={visible}>
+            <Drawer width={widthDrawer || 'default'} title={`список веток репозитория: ${title}`} placement="right" onClose={onClose} visible={visible}>
                 {getData.load ? getData.branch.map(item => <p className={style.list_branch} key={item.name}>{item.name}</p>) : <Loader />}
             </Drawer>}
         </>

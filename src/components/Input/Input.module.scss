@@ -21,3 +21,8 @@
     background-color: $disabled-input-bgc;
     color: $plaseholder-color;
 }
+@media screen and (max-width: 400px) {
+    .search_input {
+        width: 100%;
+    }
+}

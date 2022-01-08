@@ -62,3 +62,24 @@
     @include textStyle(normal, 14px);
     color: $plaseholder-color;
 }
+@media screen and (max-width: 400px) {
+    .repositoty {
+        width: 100%;
+    }
+    .title {
+        width: 200px;
+    }
+}
+@media screen and (max-width: 375px) {
+    .title {
+        width: 150px;
+    }
+}
+@media screen and (max-width: 350px) {
+    .details {
+        justify-content: start;
+    }
+    .last_update {
+        margin-left: 10px;
+    }
+}

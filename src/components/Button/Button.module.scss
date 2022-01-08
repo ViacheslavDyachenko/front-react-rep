@@ -17,3 +17,9 @@
         background-color: $border-color;
     }
 }
+@media screen and (max-width: 400px) {
+    .search_btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}
